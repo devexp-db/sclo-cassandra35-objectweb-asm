@@ -32,7 +32,7 @@
 
 Name:           objectweb-asm
 Version:        3.1
-Release:        2jpp
+Release:        2jpp.1%{dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -42,7 +42,6 @@ Source0:        http://download.forge.objectweb.org/asm/asm-3.1.tar.gz
 
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant
-BuildRequires:  dos2unix
 BuildRequires:  objectweb-anttask
 BuildRequires:  xml-commons-jaxp-1.3-apis
 # Needed by asm-xml.jar
@@ -87,8 +86,7 @@ install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 
 #Fix EOL
-dos2unix README.txt
-dos2unix LICENSE.txt
+sed -i 's/\r//' README.txt LICENSE.txt
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -105,6 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}-%{version}/*
 
 %changelog
+* Tue Dec 04 2007 Fernando Nasser <fnasser@redhat.com> - 0:3.1-2jpp.1
+- First Fedora build
+- Replace uses of dos2unix with sed
+
 * Thu Nov 22 2007 Fernando Nasser <fnasser@redhat.com> - 0:3.1-2jpp
 - Fix EOL of txt files
 - Add dependency on jaxp 
