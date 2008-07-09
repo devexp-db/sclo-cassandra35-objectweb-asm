@@ -32,7 +32,7 @@
 
 Name:           objectweb-asm
 Version:        3.1
-Release:        2jpp.1%{dist}
+Release:        2.2%{dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -103,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}-%{version}/*
 
 %changelog
+* Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:3.1-2.2
+- drop repotag
+
 * Tue Dec 04 2007 Fernando Nasser <fnasser@redhat.com> - 0:3.1-2jpp.1
 - First Fedora build
 - Replace uses of dos2unix with sed
