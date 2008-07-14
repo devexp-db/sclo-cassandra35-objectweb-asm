@@ -32,14 +32,14 @@
 
 Name:           objectweb-asm
 Version:        3.1
-Release:        2.2%{dist}
+Release:        2.3%{dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
 URL:            http://asm.objectweb.org/
 Group:          Development/Libraries/Java
 Source0:        http://download.forge.objectweb.org/asm/asm-3.1.tar.gz
-
+Source1:		asm-MANIFEST.MF
 BuildRequires:  jpackage-utils >= 0:1.6
 BuildRequires:  ant
 BuildRequires:  objectweb-anttask
@@ -67,6 +67,11 @@ find . -name "*.jar" -exec rm -f {} \;
 %build
 ant -Dobjectweb.ant.tasks.path=$(build-classpath objectweb-anttask) jar jdoc
 
+# inject OSGi manifests
+mkdir -p META-INF
+cp %{SOURCE1} META-INF/MANIFEST.MF
+zip -u output/dist/lib/all/asm-all-%{version}.jar META-INF/MANIFEST.MF
+
 %install
 rm -rf $RPM_BUILD_ROOT
 
@@ -78,8 +83,14 @@ install -m 644 ${jar} \
 $RPM_BUILD_ROOT%{_javadir}/%{name}/`basename ${jar}`
 done
 
+install -m 644 output/dist/lib/all/asm-all-%{version}.jar \
+$RPM_BUILD_ROOT%{_javadir}/%{name}/asm-all-%{version}.jar
+
+
 (cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{version}*; do \
 ln -sf ${jar} ${jar/-%{version}/}; done)
+
+
 
 # javadoc
 install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -103,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}-%{version}/*
 
 %changelog
+* Mon Jul 14 2008 Andrew Overholt <overholt@redhat.com> 0:3.1-2.3
+- Build and ship asm-all.jar with OSGi manifest (Alexander Kurtakov)
+
 * Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:3.1-2.2
 - drop repotag
 
