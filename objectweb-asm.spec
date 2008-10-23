@@ -1,4 +1,4 @@
-# Copyright (c) 2000-2007, JPackage Project
+# Copyright (c) 2000-2008, JPackage Project
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,23 +32,35 @@
 
 Name:           objectweb-asm
 Version:        3.1
-Release:        2.3%{dist}
+Release:        5.1%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
 URL:            http://asm.objectweb.org/
 Group:          Development/Libraries/Java
 Source0:        http://download.forge.objectweb.org/asm/asm-3.1.tar.gz
-Source1:		asm-MANIFEST.MF
-BuildRequires:  jpackage-utils >= 0:1.6
-BuildRequires:  ant
-BuildRequires:  objectweb-anttask
-BuildRequires:  xml-commons-jaxp-1.3-apis
+Source1:        http://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1.pom
+Source2:        http://repo1.maven.org/maven2/asm/asm-analysis/3.1/asm-analysis-3.1.pom
+Source3:        http://repo1.maven.org/maven2/asm/asm-commons/3.1/asm-commons-3.1.pom
+Source4:        http://repo1.maven.org/maven2/asm/asm-tree/3.1/asm-tree-3.1.pom
+Source5:        http://repo1.maven.org/maven2/asm/asm-util/3.1/asm-util-3.1.pom
+Source6:        http://repo1.maven.org/maven2/asm/asm-xml/3.1/asm-xml-3.1.pom
+Source7:        http://repo1.maven.org/maven2/asm/asm-all/3.1/asm-all-3.1.pom
+Source8:        http://repo1.maven.org/maven2/asm/asm-parent/3.1/asm-parent-3.1.pom
+Source9:        asm-MANIFEST.MF
+Patch0:         objectweb-asm-no-classpath-in-manifest.patch
 # Needed by asm-xml.jar
 Requires:       xml-commons-jaxp-1.3-apis
-
+Requires(post): jpackage-utils >= 0:1.7.4
+Requires(postun): jpackage-utils >= 0:1.7.4
+BuildRequires:  jpackage-utils >= 0:1.7.4
+BuildRequires:  java-devel >= 0:1.5.0
+BuildRequires:  ant >= 0:1.6.5
+BuildRequires:  objectweb-anttask
+BuildRequires:  xml-commons-jaxp-1.3-apis
+BuildRequires:  zip
 BuildArch:      noarch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 ASM is a code manipulation tool to implement adaptable systems.
@@ -62,15 +74,16 @@ Javadoc for %{name}.
 
 %prep
 %setup -q -n asm-%{version}
-find . -name "*.jar" -exec rm -f {} \;
+%patch0 -p1
+perl -pi -e 's/\r$//g' LICENSE.txt README.txt
+
+mkdir META-INF
+cp -p %{SOURCE9} META-INF/MANIFEST.MF
 
 %build
+export CLASSPATH=
+export OPT_JAR_LIST=:
 ant -Dobjectweb.ant.tasks.path=$(build-classpath objectweb-anttask) jar jdoc
-
-# inject OSGi manifests
-mkdir -p META-INF
-cp %{SOURCE1} META-INF/MANIFEST.MF
-zip -u output/dist/lib/all/asm-all-%{version}.jar META-INF/MANIFEST.MF
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -83,46 +96,79 @@ install -m 644 ${jar} \
 $RPM_BUILD_ROOT%{_javadir}/%{name}/`basename ${jar}`
 done
 
-install -m 644 output/dist/lib/all/asm-all-%{version}.jar \
-$RPM_BUILD_ROOT%{_javadir}/%{name}/asm-all-%{version}.jar
+touch META-INF/MANIFEST.MF
+zip -u output/dist/lib/all/asm-all-%{version}.jar META-INF/MANIFEST.MF
 
+install -m 644 output/dist/lib/all/asm-all-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/
 
 (cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{version}*; do \
 ln -sf ${jar} ${jar/-%{version}/}; done)
 
-
+# pom
+install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
+install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm.pom
+%add_to_maven_depmap org.objectweb.asm asm %{version} JPP/objectweb-asm asm
+install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-analysis.pom
+%add_to_maven_depmap org.objectweb.asm asm-analysis %{version} JPP/objectweb-asm asm-analysis
+install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-commons.pom
+%add_to_maven_depmap org.objectweb.asm asm-commons %{version} JPP/objectweb-asm asm-commons
+install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-tree.pom
+%add_to_maven_depmap org.objectweb.asm asm-tree %{version} JPP/objectweb-asm asm-tree
+install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-util.pom
+%add_to_maven_depmap org.objectweb.asm asm-util %{version} JPP/objectweb-asm asm-util
+install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-xml.pom
+%add_to_maven_depmap org.objectweb.asm asm-xml %{version} JPP/objectweb-asm asm-xml
+install -m 644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-all.pom
+%add_to_maven_depmap org.objectweb.asm asm-all %{version} JPP/objectweb-asm asm-all
+install -m 644 %{SOURCE8} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-parent.pom
+%add_to_maven_depmap org.objectweb.asm asm-parent %{version} JPP/objectweb-asm asm-parent
 
 # javadoc
 install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
 cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-
-#Fix EOL
-sed -i 's/\r//' README.txt LICENSE.txt
+ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+%update_maven_depmap
+
+%postun
+%update_maven_depmap
+
 %files
 %defattr(0644,root,root,0755)
-%doc README.txt LICENSE.txt
+%doc LICENSE.txt README.txt
 %dir %{_javadir}/%{name}
 %{_javadir}/%{name}/*.jar
+%{_datadir}/maven2/*
+%{_mavendepmapfragdir}/*
 
 %files javadoc
 %defattr(0644,root,root,0755)
-%dir %{_javadocdir}/%{name}-%{version}
-%{_javadocdir}/%{name}-%{version}/*
+%{_javadocdir}/%{name}-%{version}
+%{_javadocdir}/%{name}
 
 %changelog
-* Mon Jul 14 2008 Andrew Overholt <overholt@redhat.com> 0:3.1-2.3
-- Build and ship asm-all.jar with OSGi manifest (Alexander Kurtakov)
+* Tue Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5.1
+- build for Fedora
 
-* Wed Jul  9 2008 Tom "spot" Callaway <tcallawa@redhat.com> - 0:3.1-2.2
-- drop repotag
+* Tue Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5
+- add OSGi manifest (Alexander Kurtakov)
 
-* Tue Dec 04 2007 Fernando Nasser <fnasser@redhat.com> - 0:3.1-2jpp.1
-- First Fedora build
-- Replace uses of dos2unix with sed
+* Mon Oct 20 2008 David Walluck <dwalluck@redhat.com> 0:3.1-4
+- remove Class-Path from MANIFEST.MF
+- add unversioned javadoc symlink
+- remove javadoc scriptlets
+- fix directory ownership
+- remove build requirement on dos2unix
+
+* Fri Feb 08 2008 Ralph Apel <r.apel@r-apel.de> - 0:3.1-3jpp
+- Add poms and depmap frags with groupId of org.objectweb.asm !
+- Add asm-all.jar 
+- Add -javadoc Requires post and postun
+- Restore Vendor, Distribution
 
 * Thu Nov 22 2007 Fernando Nasser <fnasser@redhat.com> - 0:3.1-2jpp
 - Fix EOL of txt files
