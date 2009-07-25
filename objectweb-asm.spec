@@ -32,7 +32,7 @@
 
 Name:           objectweb-asm
 Version:        3.1
-Release:        6.1%{?dist}
+Release:        7.1%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
+* Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.1-7.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.1-6.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
