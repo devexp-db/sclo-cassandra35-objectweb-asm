@@ -31,22 +31,22 @@
 %define section free
 
 Name:           objectweb-asm
-Version:        3.1
-Release:        7.1%{?dist}
+Version:        3.2
+Release:        1%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
 URL:            http://asm.objectweb.org/
 Group:          Development/Libraries/Java
-Source0:        http://download.forge.objectweb.org/asm/asm-3.1.tar.gz
-Source1:        http://repo1.maven.org/maven2/asm/asm/3.1/asm-3.1.pom
-Source2:        http://repo1.maven.org/maven2/asm/asm-analysis/3.1/asm-analysis-3.1.pom
-Source3:        http://repo1.maven.org/maven2/asm/asm-commons/3.1/asm-commons-3.1.pom
-Source4:        http://repo1.maven.org/maven2/asm/asm-tree/3.1/asm-tree-3.1.pom
-Source5:        http://repo1.maven.org/maven2/asm/asm-util/3.1/asm-util-3.1.pom
-Source6:        http://repo1.maven.org/maven2/asm/asm-xml/3.1/asm-xml-3.1.pom
-Source7:        http://repo1.maven.org/maven2/asm/asm-all/3.1/asm-all-3.1.pom
-Source8:        http://repo1.maven.org/maven2/asm/asm-parent/3.1/asm-parent-3.1.pom
+Source0:        http://download.forge.objectweb.org/asm/asm-3.2.tar.gz
+Source1:        http://repo1.maven.org/maven2/asm/asm/3.2/asm-3.2.pom
+Source2:        http://repo1.maven.org/maven2/asm/asm-analysis/3.2/asm-analysis-3.2.pom
+Source3:        http://repo1.maven.org/maven2/asm/asm-commons/3.2/asm-commons-3.2.pom
+Source4:        http://repo1.maven.org/maven2/asm/asm-tree/3.2/asm-tree-3.2.pom
+Source5:        http://repo1.maven.org/maven2/asm/asm-util/3.2/asm-util-3.2.pom
+Source6:        http://repo1.maven.org/maven2/asm/asm-xml/3.2/asm-xml-3.2.pom
+Source7:        http://repo1.maven.org/maven2/asm/asm-all/3.2/asm-all-3.2.pom
+Source8:        http://repo1.maven.org/maven2/asm/asm-parent/3.2/asm-parent-3.2.pom
 Source9:        asm-MANIFEST.MF
 Patch0:         objectweb-asm-no-classpath-in-manifest.patch
 # Needed by asm-xml.jar
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
+* Thu Apr 15 2010 Fernando Nasser <fnasser@redhat.com> 0:3.2.1
+- Upgrade to 3.2
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.1-7.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
