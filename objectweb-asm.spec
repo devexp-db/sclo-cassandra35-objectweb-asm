@@ -32,7 +32,7 @@
 
 Name:           objectweb-asm
 Version:        3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -107,21 +107,21 @@ ln -sf ${jar} ${jar/-%{version}/}; done)
 # pom
 install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
 install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm.pom
-%add_to_maven_depmap org.objectweb.asm asm %{version} JPP/objectweb-asm asm
+%add_to_maven_depmap asm asm %{version} JPP/objectweb-asm asm
 install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-analysis.pom
-%add_to_maven_depmap org.objectweb.asm asm-analysis %{version} JPP/objectweb-asm asm-analysis
+%add_to_maven_depmap asm asm-analysis %{version} JPP/objectweb-asm asm-analysis
 install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-commons.pom
-%add_to_maven_depmap org.objectweb.asm asm-commons %{version} JPP/objectweb-asm asm-commons
+%add_to_maven_depmap asm asm-commons %{version} JPP/objectweb-asm asm-commons
 install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-tree.pom
-%add_to_maven_depmap org.objectweb.asm asm-tree %{version} JPP/objectweb-asm asm-tree
+%add_to_maven_depmap asm asm-tree %{version} JPP/objectweb-asm asm-tree
 install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-util.pom
-%add_to_maven_depmap org.objectweb.asm asm-util %{version} JPP/objectweb-asm asm-util
+%add_to_maven_depmap asm asm-util %{version} JPP/objectweb-asm asm-util
 install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-xml.pom
-%add_to_maven_depmap org.objectweb.asm asm-xml %{version} JPP/objectweb-asm asm-xml
+%add_to_maven_depmap asm asm-xml %{version} JPP/objectweb-asm asm-xml
 install -m 644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-all.pom
-%add_to_maven_depmap org.objectweb.asm asm-all %{version} JPP/objectweb-asm asm-all
+%add_to_maven_depmap asm asm-all %{version} JPP/objectweb-asm asm-all
 install -m 644 %{SOURCE8} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-parent.pom
-%add_to_maven_depmap org.objectweb.asm asm-parent %{version} JPP/objectweb-asm asm-parent
+%add_to_maven_depmap asm asm-parent %{version} JPP/objectweb-asm asm-parent
 
 # javadoc
 install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
+* Tue Jul 13 2010 Orion Poplawski <orion@cora.nwra.com>  0:3.2.1-2
+- Change depmap parent id to asm (bug #606659)
+
 * Thu Apr 15 2010 Fernando Nasser <fnasser@redhat.com> 0:3.2.1
 - Upgrade to 3.2
 
