@@ -32,7 +32,7 @@
 
 Name:           objectweb-asm
 Version:        3.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -151,6 +151,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_javadocdir}/%{name}
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Tue Jul 13 2010 Orion Poplawski <orion@cora.nwra.com>  0:3.2.1-2
 - Change depmap parent id to asm (bug #606659)
 
