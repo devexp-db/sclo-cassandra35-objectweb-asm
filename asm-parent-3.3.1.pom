@@ -6,7 +6,7 @@
 
   <artifactId>asm-parent</artifactId>
   <groupId>asm</groupId>
-  <version>3.2</version>
+  <version>3.3.1</version>
   <packaging>pom</packaging>
 
   <name>ASM</name>
@@ -55,9 +55,9 @@
   </developers>
 
   <scm>
-    <connection>scm:svn:svn://svn.forge.objectweb.org/svnroot/asm/tags/ASM_3_2</connection>
-    <developerConnection>scm:svn:svn+ssh://${maven.username}@svn.forge.objectweb.org/svnroot/asm/tags/ASM_3_2</developerConnection>
-    <url>http://svn.forge.objectweb.org/cgi-bin/viewcvs.cgi/asm/tags/ASM_3_2/</url>
+    <connection>scm:svn:svn://svn.forge.objectweb.org/svnroot/asm/trunk</connection>
+    <developerConnection>scm:svn:svn+ssh://${maven.username}@svn.forge.objectweb.org/svnroot/asm/trunk</developerConnection>
+    <url>http://svn.forge.objectweb.org/cgi-bin/viewcvs.cgi/asm/trunk/</url>
   </scm>
   
   <issueManagement>
