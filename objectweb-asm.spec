@@ -28,26 +28,16 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-%define section free
-
 Name:           objectweb-asm
 Version:        3.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
 URL:            http://asm.objectweb.org/
 Group:          Development/Libraries/Java
 Source0:        http://download.forge.objectweb.org/asm/asm-3.3.1.tar.gz
-Source1:        http://repo1.maven.org/maven2/asm/asm/3.3.1/asm-3.3.1.pom
-Source2:        http://repo1.maven.org/maven2/asm/asm-analysis/3.3.1/asm-analysis-3.3.1.pom
-Source3:        http://repo1.maven.org/maven2/asm/asm-commons/3.3.1/asm-commons-3.3.1.pom
-Source4:        http://repo1.maven.org/maven2/asm/asm-tree/3.3.1/asm-tree-3.3.1.pom
-Source5:        http://repo1.maven.org/maven2/asm/asm-util/3.3.1/asm-util-3.3.1.pom
-Source6:        http://repo1.maven.org/maven2/asm/asm-xml/3.3.1/asm-xml-3.3.1.pom
-Source7:        http://repo1.maven.org/maven2/asm/asm-all/3.3.1/asm-all-3.3.1.pom
-Source8:        http://repo1.maven.org/maven2/asm/asm-parent/3.3.1/asm-parent-3.3.1.pom
-Source9:        asm-MANIFEST.MF
+Source1:        asm-MANIFEST.MF
 Patch0:         objectweb-asm-no-classpath-in-manifest.patch
 # Needed by asm-xml.jar
 Requires:       xml-commons-jaxp-1.3-apis
@@ -60,14 +50,13 @@ BuildRequires:  objectweb-anttask
 BuildRequires:  xml-commons-jaxp-1.3-apis
 BuildRequires:  zip
 BuildArch:      noarch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 ASM is a code manipulation tool to implement adaptable systems.
 
 %package        javadoc
 Summary:        Javadoc for %{name}
-Group:          Development/Documentation
+Group:          Documentation
 
 %description    javadoc
 Javadoc for %{name}.
@@ -78,79 +67,59 @@ Javadoc for %{name}.
 perl -pi -e 's/\r$//g' LICENSE.txt README.txt
 
 mkdir META-INF
-cp -p %{SOURCE9} META-INF/MANIFEST.MF
+cp -p %{SOURCE1} META-INF/MANIFEST.MF
 
 %build
-export CLASSPATH=
-export OPT_JAR_LIST=:
 ant -Dobjectweb.ant.tasks.path=$(build-classpath objectweb-anttask) jar jdoc
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
 # jars
 install -d -m 755 $RPM_BUILD_ROOT%{_javadir}/%{name}
+install -d -m 755 $RPM_BUILD_ROOT%{_mavenpomdir}
 
 for jar in output/dist/lib/*.jar; do
 install -m 644 ${jar} \
-$RPM_BUILD_ROOT%{_javadir}/%{name}/`basename ${jar}`
+$RPM_BUILD_ROOT%{_javadir}/%{name}/`basename ${jar/-%{version}/}`
 done
 
 touch META-INF/MANIFEST.MF
 zip -u output/dist/lib/all/asm-all-%{version}.jar META-INF/MANIFEST.MF
 
-install -m 644 output/dist/lib/all/asm-all-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/
-
-(cd $RPM_BUILD_ROOT%{_javadir}/%{name} && for jar in *-%{version}*; do \
-ln -sf ${jar} ${jar/-%{version}/}; done)
+install -m 644 output/dist/lib/all/asm-all-%{version}.jar $RPM_BUILD_ROOT%{_javadir}/%{name}/asm-all.jar
+install -m 644 output/dist/lib/all/asm-all-%{version}.pom $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.objectweb-asm-asm-all.pom
 
 # pom
-install -d -m 755 $RPM_BUILD_ROOT%{_datadir}/maven2/poms
-install -m 644 %{SOURCE1} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm.pom
-%add_to_maven_depmap asm asm %{version} JPP/objectweb-asm asm
-install -m 644 %{SOURCE2} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-analysis.pom
-%add_to_maven_depmap asm asm-analysis %{version} JPP/objectweb-asm asm-analysis
-install -m 644 %{SOURCE3} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-commons.pom
-%add_to_maven_depmap asm asm-commons %{version} JPP/objectweb-asm asm-commons
-install -m 644 %{SOURCE4} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-tree.pom
-%add_to_maven_depmap asm asm-tree %{version} JPP/objectweb-asm asm-tree
-install -m 644 %{SOURCE5} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-util.pom
-%add_to_maven_depmap asm asm-util %{version} JPP/objectweb-asm asm-util
-install -m 644 %{SOURCE6} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-xml.pom
-%add_to_maven_depmap asm asm-xml %{version} JPP/objectweb-asm asm-xml
-install -m 644 %{SOURCE7} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-all.pom
-%add_to_maven_depmap asm asm-all %{version} JPP/objectweb-asm asm-all
-install -m 644 %{SOURCE8} $RPM_BUILD_ROOT%{_datadir}/maven2/poms/JPP.objectweb-asm-asm-parent.pom
-%add_to_maven_depmap asm asm-parent %{version} JPP/objectweb-asm asm-parent
+for pom in output/dist/lib/*.pom; do
+install -m 644 ${pom} $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.objectweb-asm-`basename ${pom/-%{version}/}`
+done
+%add_maven_depmap JPP.objectweb-asm-asm.pom %{name}/asm.jar
+%add_maven_depmap JPP.objectweb-asm-asm-analysis.pom %{name}/asm-analysis.jar
+%add_maven_depmap JPP.objectweb-asm-asm-commons.pom %{name}/asm-commons.jar
+%add_maven_depmap JPP.objectweb-asm-asm-tree.pom %{name}/asm-tree.jar
+%add_maven_depmap JPP.objectweb-asm-asm-util.pom %{name}/asm-util.jar
+%add_maven_depmap JPP.objectweb-asm-asm-xml.pom %{name}/asm-xml.jar
+%add_maven_depmap JPP.objectweb-asm-asm-all.pom %{name}/asm-all.jar
+%add_maven_depmap JPP.objectweb-asm-asm-parent.pom
 
 # javadoc
-install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}-%{version}
-ln -s %{name}-%{version} $RPM_BUILD_ROOT%{_javadocdir}/%{name}
-
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
+install -p -d -m 755 $RPM_BUILD_ROOT%{_javadocdir}/%{name}
+cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 
 %files
-%defattr(0644,root,root,0755)
 %doc LICENSE.txt README.txt
 %dir %{_javadir}/%{name}
 %{_javadir}/%{name}/*.jar
-%{_datadir}/maven2/*
+%{_mavenpomdir}/*
 %{_mavendepmapfragdir}/*
 
 %files javadoc
-%defattr(0644,root,root,0755)
-%{_javadocdir}/%{name}-%{version}
 %{_javadocdir}/%{name}
 
 %changelog
+* Fri Sep 16 2011 Alexander Kurtakov <akurtako@redhat.com> 0:3.3.1-2
+- Use poms produced by the build not foreign ones.
+- Adpat to current guidelines.
+
 * Mon Apr 04 2011 Chris Aniszczyk <zx@redhat.com> 0:3.3.1
 - Upgrade to 3.3.1
 
