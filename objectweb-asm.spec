@@ -30,7 +30,7 @@
 
 Name:           objectweb-asm
 Version:        3.3.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -92,7 +92,7 @@ install -m 644 output/dist/lib/all/asm-all-%{version}.pom $RPM_BUILD_ROOT%{_mave
 for pom in output/dist/lib/*.pom; do
 install -m 644 ${pom} $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.objectweb-asm-`basename ${pom/-%{version}/}`
 done
-%add_maven_depmap JPP.objectweb-asm-asm.pom %{name}/asm.jar
+%add_maven_depmap JPP.objectweb-asm-asm.pom %{name}/asm.jar -a "org.eclipse.jetty.orbit:org.objectweb.asm"
 %add_maven_depmap JPP.objectweb-asm-asm-analysis.pom %{name}/asm-analysis.jar
 %add_maven_depmap JPP.objectweb-asm-asm-commons.pom %{name}/asm-commons.jar
 %add_maven_depmap JPP.objectweb-asm-asm-tree.pom %{name}/asm-tree.jar
@@ -116,6 +116,10 @@ cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %{_javadocdir}/%{name}
 
 %changelog
+* Mon Mar  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:3.3.1-6
+- Add depmap for org.eclipse.jetty.orbit
+- Resolves: rhbz#917625
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.3.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
