@@ -30,7 +30,7 @@
 
 Name:           objectweb-asm
 Version:        3.3.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          0
 Summary:        A code manipulation tool to implement adaptable systems
 License:        BSD
@@ -92,13 +92,13 @@ install -m 644 output/dist/lib/all/asm-all-%{version}.pom $RPM_BUILD_ROOT%{_mave
 for pom in output/dist/lib/*.pom; do
 install -m 644 ${pom} $RPM_BUILD_ROOT%{_mavenpomdir}/JPP.objectweb-asm-`basename ${pom/-%{version}/}`
 done
-%add_maven_depmap JPP.objectweb-asm-asm.pom %{name}/asm.jar -a "org.eclipse.jetty.orbit:org.objectweb.asm"
+%add_maven_depmap JPP.objectweb-asm-asm.pom %{name}/asm.jar
 %add_maven_depmap JPP.objectweb-asm-asm-analysis.pom %{name}/asm-analysis.jar
 %add_maven_depmap JPP.objectweb-asm-asm-commons.pom %{name}/asm-commons.jar
 %add_maven_depmap JPP.objectweb-asm-asm-tree.pom %{name}/asm-tree.jar
 %add_maven_depmap JPP.objectweb-asm-asm-util.pom %{name}/asm-util.jar
 %add_maven_depmap JPP.objectweb-asm-asm-xml.pom %{name}/asm-xml.jar
-%add_maven_depmap JPP.objectweb-asm-asm-all.pom %{name}/asm-all.jar
+%add_maven_depmap JPP.objectweb-asm-asm-all.pom %{name}/asm-all.jar -a "org.eclipse.jetty.orbit:org.objectweb.asm"
 %add_maven_depmap JPP.objectweb-asm-asm-parent.pom
 
 # javadoc
@@ -116,6 +116,10 @@ cp -pr output/dist/doc/javadoc/user/* $RPM_BUILD_ROOT%{_javadocdir}/%{name}
 %{_javadocdir}/%{name}
 
 %changelog
+* Wed Mar  6 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:3.3.1-7
+- Make jetty orbit depmap point to asm-all jar
+- Resolves: rhbz#917625
+
 * Mon Mar  4 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 0:3.3.1-6
 - Add depmap for org.eclipse.jetty.orbit
 - Resolves: rhbz#917625
