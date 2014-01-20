@@ -1,6 +1,6 @@
 Name:           objectweb-asm
 Version:        5.0
-Release:        0.1.beta%{?dist}
+Release:        0.2.beta%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -32,7 +32,6 @@ This package provides %{summary}.
 %prep
 %setup -q -n asm-%{version}_BETA
 find -name *.jar -delete
-%mvn_alias :asm-all org.eclipse.jetty.orbit:org.objectweb.asm
 
 sed -i /Class-Path/d archive/*.bnd
 sed -i "s/Import-Package:/&org.objectweb.asm,org.objectweb.asm.util,/" archive/asm-xml.bnd
@@ -61,6 +60,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Mon Jan 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0-0.2.beta
+- Remove Eclipse Orbit alias
+
 * Tue Dec  3 2013 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0-0.1.beta
 - Update to 5.0 beta
 
