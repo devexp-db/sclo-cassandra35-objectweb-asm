@@ -1,6 +1,6 @@
 Name:           objectweb-asm
 Version:        5.0
-Release:        0.2.beta%{?dist}
+Release:        0.3.beta%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -43,7 +43,7 @@ sed -i -e '/kind="lib"/d' -e 's|output/eclipse|output/build|' .classpath
 
 %install
 %mvn_artifact output/dist/lib/asm-parent-%{version}_BETA.pom
-for m in asm asm-analysis asm-commons asm-tree asm-util asm-xml all/asm-all; do
+for m in asm asm-analysis asm-commons asm-tree asm-util asm-xml all/asm-all all/asm-debug-all; do
     %mvn_artifact output/dist/lib/${m}-%{version}_BETA.pom \
                   output/dist/lib/${m}-%{version}_BETA.jar
 done
@@ -60,6 +60,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Wed Mar 19 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0-0.3.beta
+- Enable asm-debug-all module
+
 * Mon Jan 20 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0-0.2.beta
 - Remove Eclipse Orbit alias
 
