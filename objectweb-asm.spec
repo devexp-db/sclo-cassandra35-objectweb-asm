@@ -1,12 +1,12 @@
 Name:           objectweb-asm
-Version:        5.0
-Release:        0.3.beta%{?dist}
+Version:        5.0.1
+Release:        1%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
 BuildArch:      noarch
 
-Source0:        http://download.forge.ow2.org/asm/asm-%{version}_BETA.tar.gz
+Source0:        http://download.forge.ow2.org/asm/asm-%{version}.tar.gz
 Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
 BuildRequires:  ant
@@ -30,7 +30,7 @@ Summary:        API documentation for %{name}
 This package provides %{summary}.
 
 %prep
-%setup -q -n asm-%{version}_BETA
+%setup -q -n asm-%{version}
 find -name *.jar -delete
 
 sed -i /Class-Path/d archive/*.bnd
@@ -42,10 +42,10 @@ sed -i -e '/kind="lib"/d' -e 's|output/eclipse|output/build|' .classpath
 %ant -Dobjectweb.ant.tasks.path= jar jdoc
 
 %install
-%mvn_artifact output/dist/lib/asm-parent-%{version}_BETA.pom
+%mvn_artifact output/dist/lib/asm-parent-%{version}.pom
 for m in asm asm-analysis asm-commons asm-tree asm-util asm-xml all/asm-all all/asm-debug-all; do
-    %mvn_artifact output/dist/lib/${m}-%{version}_BETA.pom \
-                  output/dist/lib/${m}-%{version}_BETA.jar
+    %mvn_artifact output/dist/lib/${m}-%{version}.pom \
+                  output/dist/lib/${m}-%{version}.jar
 done
 %mvn_install -J output/dist/doc/javadoc/user
 
@@ -60,6 +60,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Mon Mar 24 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0.1-1
+- Update to upstream version 5.0.1
+
 * Wed Mar 19 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0-0.3.beta
 - Enable asm-debug-all module
 
