@@ -1,6 +1,9 @@
-Name:           objectweb-asm
+%{?scl:%scl_package objectweb-asm}
+%{!?scl:%global pkg_name %{name}}
+
+Name:           %{?scl_prefix}objectweb-asm
 Version:        5.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -12,9 +15,10 @@ Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 BuildRequires:  ant
 BuildRequires:  aqute-bnd
 BuildRequires:  maven-local
+%{?scl:Requires: %scl_runtime}
 
-Obsoletes:      %{name}4 < 5
-Provides:       %{name}4 = %{version}-%{release}
+Obsoletes:      %{?scl_prefix}objectweb-asm4 < 5
+Provides:       %{?scl_prefix}objectweb-asm4 = %{version}-%{release}
 
 %description
 ASM is an all purpose Java bytecode manipulation and analysis
@@ -24,7 +28,7 @@ transformations and analysis algorithms allow to easily assemble
 custom complex transformations and code analysis tools.
 
 %package        javadoc
-Summary:        API documentation for %{name}
+Summary:        API documentation for %{pkg_name}
 
 %description    javadoc
 This package provides %{summary}.
@@ -42,24 +46,30 @@ sed -i -e '/kind="lib"/d' -e 's|output/eclipse|output/build|' .classpath
 %ant -Dobjectweb.ant.tasks.path= jar jdoc
 
 %install
+%{?scl:scl enable %{scl} - <<"EOF"}
 %mvn_artifact output/dist/lib/asm-parent-%{version}.pom
 for m in asm asm-analysis asm-commons asm-tree asm-util asm-xml all/asm-all all/asm-debug-all; do
     %mvn_artifact output/dist/lib/${m}-%{version}.pom \
                   output/dist/lib/${m}-%{version}.jar
 done
 %mvn_install -J output/dist/doc/javadoc/user
+%{?scl:EOF}
 
-%jpackage_script org.objectweb.asm.xml.Processor "" "" %{name}/asm:%{name}/asm-attrs:%{name}/asm-util:%{name}/asm-xml %{name}-processor true
+%jpackage_script org.objectweb.asm.xml.Processor "" "" %{pkg_name}/asm:%{pkg_name}/asm-attrs:%{pkg_name}/asm-util:%{pkg_name}/asm-xml %{pkg_name}-processor true
 
 %files -f .mfiles
 %doc LICENSE.txt README.txt
-%{_bindir}/%{name}-processor
-%dir %{_javadir}/%{name}
+%{_bindir}/%{pkg_name}-processor
+%dir %{_javadir}/%{pkg_name}
 
 %files javadoc -f .mfiles-javadoc
 %doc LICENSE.txt
 
 %changelog
+* Mon Apr 14 2014 Mat Booth <mat.booth@redhat.com> - 5.0.1-2
+- SCL-ize package.
+- Fix bogus dates in changelog.
+
 * Mon Mar 24 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0.1-1
 - Update to upstream version 5.0.1
 
@@ -114,10 +124,10 @@ done
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0:3.1-6.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
-* Tue Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5.1
+* Thu Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5.1
 - build for Fedora
 
-* Tue Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5
+* Thu Oct 23 2008 David Walluck <dwalluck@redhat.com> 0:3.1-5
 - add OSGi manifest (Alexander Kurtakov)
 
 * Mon Oct 20 2008 David Walluck <dwalluck@redhat.com> 0:3.1-4
