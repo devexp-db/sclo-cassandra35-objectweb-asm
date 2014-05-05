@@ -2,8 +2,8 @@
 %{!?scl:%global pkg_name %{name}}
 
 Name:           %{?scl_prefix}objectweb-asm
-Version:        5.0.1
-Release:        2%{?dist}
+Version:        5.0.2
+Release:        1%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -66,6 +66,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Mon May  5 2014 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.0.2-1
+- Update to upstream version 5.0.2
+
 * Mon Apr 14 2014 Mat Booth <mat.booth@redhat.com> - 5.0.1-2
 - SCL-ize package.
 - Fix bogus dates in changelog.
