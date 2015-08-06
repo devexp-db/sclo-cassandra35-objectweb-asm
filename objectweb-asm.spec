@@ -2,8 +2,8 @@
 %{!?scl:%global pkg_name %{name}}
 
 Name:           %{?scl_prefix}objectweb-asm
-Version:        5.0.3
-Release:        2%{?dist}
+Version:        5.0.4
+Release:        1%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -66,6 +66,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Thu Aug 06 2015 Michael Simacek <msimacek@redhat.com> - 5.0.4-1
+- Update to upstream version 5.0.4
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.0.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
