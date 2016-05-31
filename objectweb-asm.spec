@@ -3,7 +3,7 @@
 
 Name:           %{?scl_prefix}objectweb-asm
 Version:        5.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -39,7 +39,7 @@ find -name *.jar -delete
 
 sed -i /Class-Path/d archive/*.bnd
 sed -i "s/Import-Package:/&org.objectweb.asm,org.objectweb.asm.util,/" archive/asm-xml.bnd
-sed -i "s|\${config}/biz.aQute.bnd.jar|`build-classpath aqute-bnd`|" archive/*.xml
+sed -i "s|\${config}/biz.aQute.bnd.jar|`build-classpath aqute-bnd slf4j/api slf4j/simple org.eclipse.osgi:org.eclipse.osgi.services`|" archive/*.xml
 sed -i -e '/kind="lib"/d' -e 's|output/eclipse|output/build|' .classpath
 
 %build
@@ -66,6 +66,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Tue May 31 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.1-2
+- Add missing JARs to BND classpath
+
 * Thu Mar 24 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.1-1
 - Update to upstream version 5.1
 
