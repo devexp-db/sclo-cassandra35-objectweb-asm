@@ -3,7 +3,7 @@
 
 Name:           %{?scl_prefix}objectweb-asm
 Version:        5.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Java bytecode manipulation and analysis framework
 License:        BSD
 URL:            http://asm.ow2.org/
@@ -15,6 +15,7 @@ Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 BuildRequires:  ant
 BuildRequires:  aqute-bnd
 BuildRequires:  maven-local
+BuildRequires:  objectweb-pom
 %{?scl:Requires: %scl_runtime}
 
 Obsoletes:      %{?scl_prefix}objectweb-asm4 < 5
@@ -66,6 +67,9 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Wed Jun 15 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.1-4
+- Add missing build-requires
+
 * Wed Jun  1 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.1-3
 - Avoid calling XMvn from build-classpath
 
