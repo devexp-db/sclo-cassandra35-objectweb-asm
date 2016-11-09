@@ -1,25 +1,25 @@
 %{?scl:%scl_package objectweb-asm}
 %{!?scl:%global pkg_name %{name}}
 
-Name:           %{?scl_prefix}objectweb-asm
-Version:        5.1
-Release:        4%{?dist}
-Summary:        Java bytecode manipulation and analysis framework
-License:        BSD
-URL:            http://asm.ow2.org/
-BuildArch:      noarch
+Name:		%{?scl_prefix}objectweb-asm
+Version:	5.1
+Release:	6%{?dist}
+Summary:	Java bytecode manipulation and analysis framework
+License:	BSD
+URL:		http://asm.ow2.org/
+BuildArch:	noarch
+Source0:	http://download.forge.ow2.org/asm/asm-%{version}.tar.gz
+Source1:	http://www.apache.org/licenses/LICENSE-2.0.txt
+# missing parent pom
+Source2:	http://repo.maven.apache.org/maven2/org/ow2/ow2/1.5/ow2-1.5.pom
 
-Source0:        http://download.forge.ow2.org/asm/asm-%{version}.tar.gz
-Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
-
-BuildRequires:  ant
-BuildRequires:  aqute-bnd
-BuildRequires:  maven-local
-BuildRequires:  objectweb-pom
+BuildRequires:	%{?scl_prefix_java_common}ant
+BuildRequires:	%{?scl_prefix_maven}aqute-bnd
+BuildRequires:	%{?scl_prefix_maven}maven-local
 %{?scl:Requires: %scl_runtime}
 
-Obsoletes:      %{?scl_prefix}objectweb-asm4 < 5
-Provides:       %{?scl_prefix}objectweb-asm4 = %{version}-%{release}
+Obsoletes:	%{?scl_prefix}objectweb-asm4 < 5
+Provides:	%{?scl_prefix}objectweb-asm4 = %{version}-%{release}
 
 %description
 ASM is an all purpose Java bytecode manipulation and analysis
@@ -28,26 +28,39 @@ generate classes, directly in binary form.  Provided common
 transformations and analysis algorithms allow to easily assemble
 custom complex transformations and code analysis tools.
 
-%package        javadoc
-Summary:        API documentation for %{pkg_name}
+%package javadoc
+Summary:	API documentation for %{pkg_name}
 
-%description    javadoc
+%description javadoc
 This package provides %{summary}.
 
 %prep
 %setup -q -n asm-%{version}
 find -name *.jar -delete
 
+# copy missing parent pom
+cp -p %{SOURCE2} pom.xml
+
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 sed -i /Class-Path/d archive/*.bnd
 sed -i "s/Import-Package:/&org.objectweb.asm,org.objectweb.asm.util,/" archive/asm-xml.bnd
-sed -i "s|\${config}/biz.aQute.bnd.jar|`build-classpath aqute-bnd slf4j/api slf4j/simple eclipse/osgi.services`|" archive/*.xml
+sed -i "s|\${config}/biz.aQute.bnd.jar|`build-classpath aqute-bnd slf4j-api slf4j-simple`|" archive/*.xml
 sed -i -e '/kind="lib"/d' -e 's|output/eclipse|output/build|' .classpath
 
+# remove maven enforcer plugin, not needed in fedora nor SCL
+%pom_remove_plugin :maven-enforcer-plugin
+%{?scl:EOF}
+
 %build
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
+# compile package
 %ant -Dobjectweb.ant.tasks.path= jar jdoc
+# compile parent pom
+%mvn_build
+%{?scl:EOF}
 
 %install
-%{?scl:scl enable %{scl} - <<"EOF"}
+%{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 %mvn_artifact output/dist/lib/asm-parent-%{version}.pom
 for m in asm asm-analysis asm-commons asm-tree asm-util asm-xml all/asm-all all/asm-debug-all; do
     %mvn_artifact output/dist/lib/${m}-%{version}.pom \
@@ -67,6 +80,12 @@ done
 %doc LICENSE.txt
 
 %changelog
+* Wed Nov 09 2016 Tomas Repik <trepik@redhat.com> - 5.1-6
+- remove maven enforcer plugin
+
+* Mon Aug 22 2016 Tomas Repik <trepik@redhat.com> - 5.1-5
+- parent pom included (org.ow2:ow2)
+
 * Wed Jun 15 2016 Mikolaj Izdebski <mizdebsk@redhat.com> - 5.1-4
 - Add missing build-requires
 
